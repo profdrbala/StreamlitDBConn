@@ -22,17 +22,26 @@ def main():
     st.title("Streamlit Firebase Example")
 
     st.subheader("Data from Firebase")
-    #collection_name = "Books"  # Replace with your Firestore collection name
 
-    # Query Firestore
-    #docs = db.collection(collection_name).limit(10).get()
+    if st.button("Get Books"):
+        users_ref = db.collection('Books')
+        docs = users_ref.stream()
+    
+        data = []
+        for doc in docs:
+            data.append(doc.to_dict())
 
-    # Display documents
-    #for doc in docs:
-    #    st.write(doc.id, doc.to_dict())
+        if data:
+            df = pd.DataFrame(data)
+            #st.table(df)
+            df = df[['title', 'isbn','author','pubisher','country','price']] 
+            #st.dataframe(df)
+            st.write(df)
+        else:
+            st.write("No data found")
 
     # Create a reference to the Google post.
-    doc_ref = db.collection("Books").document("1")
+    doc_ref = db.collection("Books")
 
     #get the data from UX
     title = st.text_input("Enter Title:")
@@ -63,22 +72,7 @@ def main():
     #st.write("The id is: ", doc.id)
     #st.write("The contents are: ", doc.to_dict())
     # Display documents
-    if st.button("Get Books"):
-        users_ref = db.collection('Books')
-        docs = users_ref.stream()
-    
-        data = []
-        for doc in docs:
-            data.append(doc.to_dict())
 
-        if data:
-            df = pd.DataFrame(data)
-            #st.table(df)
-            df = df[['title', 'isbn','author','pubisher','country','price']] 
-            #st.dataframe(df)
-            st.write(df)
-        else:
-            st.write("No data found")
             
 
 
